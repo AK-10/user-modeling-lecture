@@ -5,6 +5,7 @@ import (
 	"os"
 	"io/ioutil"
 	"fmt"
+	"log"
 
 	"github.com/tidwall/gjson"
 	"github.com/globalsign/mgo"
@@ -38,12 +39,33 @@ func getArticles() {
 		defer res.Body.Close()
 
 		byteArray, _ := ioutil.ReadAll(res.Body)
+
 		results := json2struct(category, byteArray)
-		for _, v := range results {
-			fmt.Println(v.title)
-		}
-		
+		insertDB(results)
 	}
+}
+
+func insertDB(articles []*Article) {
+	// db名
+	session, _ := mgo.Dial("mongodb://localhost/user_modeling")
+	defer session.Close()
+	// db名
+	db := session.DB("user_modeling")
+
+	// collection名
+	collection := db.C("articles")
+	for _, article := range articles {
+		if err := collection.Insert(article); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	var result Article
+	err := collection.Find(bson.M{"category": "business"}).One(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.title, result.title)
 }
 
 func json2struct(category string, json []byte) []*Article {
@@ -54,6 +76,7 @@ func json2struct(category string, json []byte) []*Article {
 	fmt.Println(total)
 	for i := 0; i < int(total); i++ {
 		article := &Article{
+			ID: bson.NewObjectId(),
 			category: category,
 			title: titles[i].String(),
 			description: descripitons[i].String(),

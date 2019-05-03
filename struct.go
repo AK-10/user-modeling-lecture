@@ -7,7 +7,7 @@ type User struct {
 
 
 type Article struct {
-	category string ``
-	title string ``
-	description string ``
+	category    string
+	title       string
+	description string
 }
