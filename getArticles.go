@@ -5,10 +5,9 @@ import (
 	"os"
 	"io/ioutil"
 	"fmt"
+	"log"
 
 	"github.com/tidwall/gjson"
-	"github.com/globalsign/mgo"
-    "github.com/globalsign/mgo/bson"
 )
 
 func getArticles() {
@@ -38,12 +37,14 @@ func getArticles() {
 		defer res.Body.Close()
 
 		byteArray, _ := ioutil.ReadAll(res.Body)
+
 		results := json2struct(category, byteArray)
-		for _, v := range results {
-			fmt.Println(v.title)
-		}
-		
+		insertDB(results)
 	}
+}
+
+func insertDB(articles []*Article) {
+	
 }
 
 func json2struct(category string, json []byte) []*Article {

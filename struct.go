@@ -7,7 +7,8 @@ type User struct {
 
 
 type Article struct {
-	category string ``
-	title string ``
-	description string ``
+	ID          bson.ObjectId `bson:"_id"`
+	category    string        `bson:"category"`
+	title       string        `bson:"title"`
+	description string        `bson:"description"`
 }
