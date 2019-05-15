@@ -145,12 +145,83 @@ func makeUsers() {
 			log.Fatal(err)
 		}
 		age, _ := strconv.Atoi(line[1])
-		u, err := makeUser(line[0], int64(age), age % 4)
+		_, err := makeUser(line[0], int64(age), age % 4)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(u)
 	}
 
 }
 
+func getUser(userID int64) (*User, error) {
+	dsName := getDBName()
+	db, err := sql.Open("mysql", dsName)
+	println("x")
+	if err != nil {
+		return nil, err
+	}
+	
+	points := map[string]int64{
+		"business": 0,
+		"entertainment": 0,
+		"general": 0,
+		"health": 0,
+		"science": 0,
+		"sports": 0,
+		"technology": 0,
+	}
+	var user User
+	user.points = points
+	if err := db.QueryRow("SELECT * FROM users u WHERE u.id = ?", userID).Scan(&user.ID, &user.name, &user.age); err != nil {
+		return nil, err
+	}
+	rows, err := db.Query("SELECT a.* FROM article_resumes ar INNER JOIN articles a ON ar.article_id = a.id WHERE ar.user_id = ?", userID)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var article Article
+		if err := rows.Scan(&article.ID, &article.category, &article.title, &article.description); err != nil {
+			return nil, err
+		}
+		user.articles = append(user.articles, &article)
+		user.points[article.category]++
+	}
+	return &user, nil
+}
+
+func getUsers() ([]*User, error) {
+	dsName := getDBName()
+	db, err := sql.Open("mysql", dsName)
+	println("x")
+	if err != nil {
+		return nil, err
+	}
+	rows, err := db.Query("SELECT id FROM users")
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*User
+	for rows.Next() {
+		var userID int64 
+		if rows.Scan(&userID); err != nil {
+			return nil, err
+		}
+		user, err := getUser(userID)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+
+func (u *User) toString() {
+	fmt.Println("id:", u.ID)
+	fmt.Println("name:", u.name)
+	fmt.Println("age:", u.age)
+	// fmt.Println("resumes:", u.articles)
+	fmt.Println("points:", u.points)
+}
