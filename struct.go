@@ -1,14 +1,21 @@
 package main
 
 type User struct {
+	ID   int64
 	name string
-	age  int
+	age  int64
 }
 
 
 type Article struct {
-	ID          bson.ObjectId `bson:"_id"`
-	category    string        `bson:"category"`
-	title       string        `bson:"title"`
-	description string        `bson:"description"`
+	ID          int64 
+	category    string        
+	title       string        
+	description string        
+}
+
+type ArticleResume struct {
+	ID int64
+	userID int64
+	articleID int64
 }
