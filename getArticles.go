@@ -6,8 +6,10 @@ import (
 	"io/ioutil"
 	"fmt"
 	"log"
+	"database/sql"
 
 	"github.com/tidwall/gjson"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func getArticles() {
@@ -43,8 +45,33 @@ func getArticles() {
 	}
 }
 
+func getDBName() string {
+	apiKeyPath := "./secret/mysqlPass"
+	f, _ := os.Open(apiKeyPath)
+	defer f.Close()
+
+	buf, _ := ioutil.ReadAll(f)
+	fmt.Println(buf)
+	return ("root:" + string(buf) + "@/user_modeling")
+}
+
 func insertDB(articles []*Article) {
-	
+	dsName := getDBName()
+	db, err := sql.Open("mysql", dsName)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for _, a := range articles {
+		ins, err := db.Prepare("INSERT INTO articles(category,title,description) VALUES(?,?,?)")
+		if err != nil {
+			log.Fatal(err)
+		}
+		ins.Exec(a.category, a.title, a.description)
+		defer ins.Close()
+	}
+	defer db.Close() // 関数がリターンする直前に呼び出される
+
 }
 
 func json2struct(category string, json []byte) []*Article {
