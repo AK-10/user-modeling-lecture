@@ -10,7 +10,7 @@
 - 類似度にはコサイン類似度を用いる
 - ベクトルのスカラーによる影響を減らすために正規化をする
 
-##　利用技術
+## 利用技術
 - データ類
   - [Google News API](https://newsapi.org/s/google-news-api)
   - [疑似個人情報生成](https://hogehoge.tk/personal/generator/)
