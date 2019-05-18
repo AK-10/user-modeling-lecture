@@ -29,13 +29,59 @@ func main() {
         user.toString()
         fmt.Println("===================================")
 
-        // others, err := getUsers()
-        // if err != nil {
-        //     log.Fatal(err)
-        // }
+        others, err := getUsers()
+        if err != nil {
+            log.Fatal(err)
+        }
+        
+        cosineSimilarity(user, others)
+        
+        fmt.Println("============ similars =============")
+        sortBySimilarity(others)
+        deleteMyself(user, others)
+        similars := others[:11]
+        for _, sim := range similars {
+            fmt.Println("id:", sim.ID)
+            fmt.Println("name: ", sim.name)
+            fmt.Println("similarity: ", sim.similarity)
+        	categories := [7]string{"business", "entertainment", "general", "health", "science", "sports", "technology"}
+            fmt.Println("------- points --------")
+            for _, v := range categories {
+                fmt.Println(v, ": ", sim.points[v])
+	}
+	fmt.Println("-----------------------")
+        } 
+        fmt.Println("===================================")
+        
+        fmt.Println("====== recommended articles =======")
+        recommended := getRecommendedArticles(user, others)
+        for _, article := range recommended {
+            article.toStringWithoutDescription()
+            fmt.Println("")
+        }
+        fmt.Println("===================================")
 
+        fmt.Println("======= recommended counts ========")
+        counter := map[string]int{
+            "business": 0,
+            "entertainment": 0,
+            "general": 0,
+            "health": 0,
+            "science": 0,
+            "sports": 0,
+            "technology": 0,
+        }
+        for _, article := range recommended {
+            counter[article.category]++
+        }
+        fmt.Println("recommended counter: ", counter)
+        fmt.Println("===================================")
+
+        // pointsを正規化: 単位ベクトルに変換
+        // 内積を取ればコサイン類似度が出る
     default:
         fmt.Println("Error Invalid argument")
         os.Exit(1)
     }
 }
+

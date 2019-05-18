@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"database/sql"
 	"encoding/csv"
     "log"
@@ -156,7 +155,6 @@ func makeUsers() {
 func getUser(userID int64) (*User, error) {
 	dsName := getDBName()
 	db, err := sql.Open("mysql", dsName)
-	println("x")
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +191,6 @@ func getUser(userID int64) (*User, error) {
 func getUsers() ([]*User, error) {
 	dsName := getDBName()
 	db, err := sql.Open("mysql", dsName)
-	println("x")
 	if err != nil {
 		return nil, err
 	}
@@ -215,13 +212,4 @@ func getUsers() ([]*User, error) {
 		users = append(users, user)
 	}
 	return users, nil
-}
-
-
-func (u *User) toString() {
-	fmt.Println("id:", u.ID)
-	fmt.Println("name:", u.name)
-	fmt.Println("age:", u.age)
-	// fmt.Println("resumes:", u.articles)
-	fmt.Println("points:", u.points)
 }
