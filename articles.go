@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 	"io/ioutil"
-	"fmt"
 	"log"
 	"database/sql"
 
@@ -51,7 +50,6 @@ func getDBName() string {
 	defer f.Close()
 
 	buf, _ := ioutil.ReadAll(f)
-	fmt.Println(buf)
 	return ("root:" + string(buf) + "@/user_modeling")
 }
 
@@ -79,7 +77,6 @@ func json2struct(category string, json []byte) []*Article {
 	titles := gjson.Get(string(json), "articles.#.title").Array()
 	descripitons := gjson.Get(string(json), "articles.#.description").Array()
 	var articles []*Article
-	fmt.Println(total)
 	for i := 0; i < int(total); i++ {
 		article := &Article{
 			category: category,
