@@ -52,9 +52,9 @@ func getRecommendedArticles(user *User, users []*User) []*Article {
 	sortBySimilarity(users)
 	deleteMyself(user, users)
 	// top10 user by similarity without myself
-	var similars [10]*User 
-	for i:= 0; i < 10; i++ {
-		similars[i] = users[i+1]
+	var similars []*User 
+	for _, u := range users {
+		similars = append(similars, u)
 	}
 	var recommendedArticles []*Article
 	

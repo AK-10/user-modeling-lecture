@@ -37,9 +37,9 @@ func main() {
         cosineSimilarity(user, others)
         
         fmt.Println("============ similars =============")
-        sortBySimilarity(others)
         deleteMyself(user, others)
-        similars := others[:11]
+        similars := getSimilars(0.7, others)
+        sortBySimilarity(similars)
         for _, sim := range similars {
             fmt.Println("id:", sim.ID)
             fmt.Println("name: ", sim.name)
@@ -54,7 +54,7 @@ func main() {
         fmt.Println("===================================")
         
         fmt.Println("====== recommended articles =======")
-        recommended := getRecommendedArticles(user, others)
+        recommended := getRecommendedArticles(user, similars)
         for _, article := range recommended {
             article.toStringWithoutDescription()
             fmt.Println("")
