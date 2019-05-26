@@ -136,7 +136,7 @@ func makeUsers() {
 	var line []string
 	for {
 		line, err = reader.Read()
-
+		
 		if err == io.EOF {
 			break
 		} 
@@ -150,6 +150,16 @@ func makeUsers() {
 		}
 	}
 
+}
+
+func getSimilars(threshold float64, users []*User) []*User {
+	var sims []*User
+	for _, u := range users {
+		if u.similarity > threshold {
+			sims = append(sims, u)
+		}
+	}
+	return sims
 }
 
 func getUser(userID int64) (*User, error) {
