@@ -65,7 +65,6 @@ func getRecommendedArticles(user *User, users []*User) []*Article {
 	var recommendedArticles []*Article
 	
 	frequencies := getFrequencies(user)
-	fmt.Println(frequencies)
 	// pick up have not read article yet
 	for _, s := range users {
 		for _, a := range s.articles {
