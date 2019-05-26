@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"sort"
+	"fmt"
 )
 
 func normalizePoints(user *User) [7]float64 {
@@ -47,27 +48,42 @@ func deleteMyself(user *User, users []*User) {
 	}
 }
 
+func getFrequencies(user *User) []string {
+	var frequencies []string
+	for k, v := range user.points {
+		if v > 8.0 {
+			frequencies = append(frequencies, k)
+		}
+	}
+	return frequencies
+} 
+
 func getRecommendedArticles(user *User, users []*User) []*Article {
 	// sort by similairty
 	sortBySimilarity(users)
 	deleteMyself(user, users)
-	// top10 user by similarity without myself
-	var similars []*User 
-	for _, u := range users {
-		similars = append(similars, u)
-	}
 	var recommendedArticles []*Article
 	
+	frequencies := getFrequencies(user)
+	fmt.Println(frequencies)
 	// pick up have not read article yet
-	for _, s := range similars {
+	for _, s := range users {
 		for _, a := range s.articles {
-			if !contains(a, user.articles) {
+			if !(containsCategory(a.category, frequencies) || contains(a, user.articles)) {
 				recommendedArticles = append(recommendedArticles, a)
 			}
 		}
 	}
-
 	return recommendedArticles
+}
+
+func containsCategory(category string, categories []string) bool {
+	for _, c := range categories {
+		if c == category {
+			return true
+		}
+	}
+	return false	
 }
 
 func contains(article *Article, articles []*Article) bool {

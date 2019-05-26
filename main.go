@@ -48,9 +48,9 @@ func main() {
             fmt.Println("------- points --------")
             for _, v := range categories {
                 fmt.Println(v, ": ", sim.points[v])
-	}
-	fmt.Println("-----------------------")
-        } 
+            }
+        }
+    	fmt.Println("-----------------------") 
         fmt.Println("===================================")
         
         fmt.Println("====== recommended articles =======")
