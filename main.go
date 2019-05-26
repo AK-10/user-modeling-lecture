@@ -8,7 +8,6 @@ import (
     "log"
 )
 
-
 func main() {
     flag.Parse()
     arg := flag.Arg(0)
